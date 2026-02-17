@@ -37,3 +37,4 @@ pubspec.lock
 
 # Coverage
 coverage/
+.worktrees

@@ -31,3 +31,4 @@ melos run format
 | Package | Description |
 |---------|-------------|
 | [smooth_button](packages/smooth_button) | An animated button widget with customizable properties |
+| [butter_search_bar](packages/butter_search_bar) | A customizable search bar with smooth animations and floating suggestions |
