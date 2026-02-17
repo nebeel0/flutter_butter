@@ -1,0 +1,23 @@
+name: flutter_butter
+packages:
+  - apps/*
+  - packages/*
+command:
+  version:
+    message: "chore: release {new_version}"
+scripts:
+  analyze:
+    run: dart analyze .
+    exec:
+      concurrency: 5
+    description: Run analyzer in all packages
+  test:
+    run: flutter test
+    exec:
+      concurrency: 1
+    packageFilters:
+      dirExists: test
+    description: Run tests in all packages
+  format:
+    run: dart format .
+    description: Format all Dart files

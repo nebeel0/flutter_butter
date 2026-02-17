@@ -1,0 +1,12 @@
+name: flutter_butter
+publish_to: none
+environment:
+  sdk: ^3.8.0
+
+dev_dependencies:
+  melos: ^6.3.3
+
+workspace:
+  - apps/showcase
+  - packages/smooth_button
+  - packages/smooth_button/example
