@@ -1,7 +1,13 @@
 name: butter_search_bar
-description: A customizable search bar widget with smooth animations, expandable mode, and floating suggestions overlay.
+description: A customizable search bar widget with smooth animations, expandable mode, floating suggestions, and Airbnb-style inline filter dimensions.
 version: 0.1.0
 homepage: https://github.com/nebeel0/flutter_butter/tree/main/packages/butter_search_bar
+repository: https://github.com/nebeel0/flutter_butter
+topics:
+  - search
+  - searchbar
+  - widgets
+  - ui
 
 environment:
   sdk: ^3.8.0
