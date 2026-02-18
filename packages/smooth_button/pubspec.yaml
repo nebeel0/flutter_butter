@@ -1,7 +1,13 @@
 name: smooth_button
-description: An animated button widget with customizable properties for Flutter.
+description: An animated button widget that scales down on press and back up on release, with customizable properties.
 version: 0.1.0
 homepage: https://github.com/nebeel0/flutter_butter/tree/main/packages/smooth_button
+repository: https://github.com/nebeel0/flutter_butter
+topics:
+  - button
+  - animation
+  - widgets
+  - ui
 
 environment:
   sdk: ^3.8.0
