@@ -1,10 +1,13 @@
 name: flutter_butter
+repository: https://github.com/nebeel0/flutter_butter
 packages:
   - apps/*
   - packages/*
 command:
   version:
     message: "chore: release {new_version}"
+    linkToCommits: true
+    workspaceChangelog: true
 scripts:
   analyze:
     run: dart analyze .
