@@ -1,0 +1,19 @@
+name: road_map_example
+description: Example app for road_map.
+publish_to: none
+
+environment:
+  sdk: ^3.8.0
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  road_map: any
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

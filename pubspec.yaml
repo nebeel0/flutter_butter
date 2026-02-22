@@ -10,3 +10,5 @@ workspace:
   - apps/showcase
   - packages/smooth_button
   - packages/smooth_button/example
+  - packages/road_map
+  - packages/road_map/example

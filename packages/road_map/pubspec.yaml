@@ -1,0 +1,23 @@
+name: road_map
+description: A document-style DAG navigator widget for Flutter. Navigate directed acyclic graphs page-by-page with prerequisite tracking and validation state propagation.
+version: 0.1.0
+homepage: https://github.com/nebeel0/flutter_butter/tree/main/packages/road_map
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.32.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  graphs: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
