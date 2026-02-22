@@ -13,6 +13,11 @@ dependencies:
     sdk: flutter
   smooth_button: any
   butter_search_bar: any
+  smooth_error: any
+  smooth_toast: any
+  smooth_carousel: any
+  smooth_badge: any
+  smooth_overlay: any
 
 dev_dependencies:
   flutter_test:

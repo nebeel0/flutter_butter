@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:butter_search_bar/butter_search_bar.dart';
+import 'package:smooth_badge/smooth_badge.dart';
 import 'package:smooth_button/smooth_button.dart';
+import 'package:smooth_carousel/smooth_carousel.dart';
+import 'package:smooth_error/smooth_error.dart';
+import 'package:smooth_overlay/smooth_overlay.dart';
+import 'package:smooth_toast/smooth_toast.dart';
 
 void main() {
   runApp(const ShowcaseApp());
@@ -11,13 +16,21 @@ class ShowcaseApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navigatorKey = GlobalKey<NavigatorState>();
+
     return MaterialApp(
       title: 'Flutter Butter Showcase',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         colorSchemeSeed: Colors.deepPurple,
         useMaterial3: true,
       ),
-      home: const ShowcaseHome(),
+      home: Builder(
+        builder: (context) {
+          SmoothToast.setNavigatorKey(navigatorKey);
+          return const ShowcaseHome();
+        },
+      ),
     );
   }
 }
@@ -260,6 +273,183 @@ class _ShowcaseHomeState extends State<ShowcaseHome> {
                 const Divider(),
                 const SizedBox(height: 24),
 
+                // -- SmoothErrorScreen --
+                _sectionTitle('SmoothErrorScreen'),
+                const SizedBox(height: 8),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => Scaffold(
+                            body: SmoothErrorScreen.network(
+                              onRetry: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('Show Full-Page Error'),
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // -- SmoothErrorCard --
+                _sectionTitle('SmoothErrorCard'),
+                const SizedBox(height: 8),
+                SmoothErrorCard.network(onRetry: () {}),
+                const SizedBox(height: 8),
+                const SmoothErrorCard(
+                  title: 'Not found',
+                  subtitle: 'The requested data could not be found',
+                  icon: Icons.search_off_outlined,
+                  compact: true,
+                ),
+                const SizedBox(height: 8),
+                SmoothErrorCard.empty(),
+
+                const SizedBox(height: 48),
+                const Divider(),
+                const SizedBox(height: 24),
+
+                // -- SmoothToast --
+                _sectionTitle('SmoothToast'),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => SmoothToast.success('Item saved!'),
+                      child: const Text('Success'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () =>
+                          SmoothToast.error('Something failed'),
+                      child: const Text('Error'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => SmoothToast.info('FYI'),
+                      child: const Text('Info'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => SmoothToast.show(
+                        title: 'Undo',
+                        message: 'Item deleted',
+                        color: Colors.grey.shade800,
+                        actionLabel: 'UNDO',
+                        onAction: () => SmoothToast.success('Restored!'),
+                      ),
+                      child: const Text('With Action'),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 48),
+                const Divider(),
+                const SizedBox(height: 24),
+
+                // -- SmoothCarousel --
+                _sectionTitle('SmoothCarousel'),
+                const SizedBox(height: 8),
+                SmoothCarousel(
+                  height: 200,
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    final colors = [
+                      Colors.blue,
+                      Colors.green,
+                      Colors.orange,
+                      Colors.purple,
+                    ];
+                    return Container(
+                      color: colors[index],
+                      child: Center(
+                        child: Text(
+                          'Page ${index + 1}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 48),
+                const Divider(),
+                const SizedBox(height: 24),
+
+                // -- SmoothBadge --
+                _sectionTitle('SmoothBadge'),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    SmoothBadge.status(
+                      text: 'Active',
+                      status: SmoothBadgeStatus.success,
+                    ),
+                    SmoothBadge.status(
+                      text: 'Pending',
+                      status: SmoothBadgeStatus.warning,
+                    ),
+                    SmoothBadge.status(
+                      text: 'Failed',
+                      status: SmoothBadgeStatus.error,
+                    ),
+                    SmoothBadge.status(
+                      text: 'Draft',
+                      status: SmoothBadgeStatus.info,
+                    ),
+                    const SmoothBadge(
+                      text: 'A+',
+                      label: 'Rating',
+                      color: Colors.deepPurple,
+                    ),
+                    const SmoothBadge(
+                      text: 'BETA',
+                      color: Colors.orange,
+                      fontSize: 10,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 48),
+                const Divider(),
+                const SizedBox(height: 24),
+
+                // -- SmoothOverlayCard --
+                _sectionTitle('SmoothOverlayCard'),
+                const SizedBox(height: 8),
+                Center(
+                  child: SmoothOverlayCard(
+                    width: 300,
+                    height: 150,
+                    onClose: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Close tapped')),
+                      );
+                    },
+                    hintText: 'Tap to expand',
+                    hintIcon: Icons.open_in_full,
+                    child: Container(
+                      color: Colors.blue.shade100,
+                      child: const Center(child: Text('Preview content')),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 48),
+                const Divider(),
+                const SizedBox(height: 24),
+
                 // -- ButterSearchBar: Inline with city suggestions --
                 const Text(
                   'ButterSearchBar — Inline',
@@ -424,6 +614,13 @@ class _ShowcaseHomeState extends State<ShowcaseHome> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
 }
