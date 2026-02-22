@@ -1,0 +1,29 @@
+name: butter_chat
+description: An AI chat widget with streaming, plan/thinking mode, message branching, and markdown rendering.
+version: 0.1.0
+homepage: https://github.com/nebeel0/flutter_butter/tree/main/packages/butter_chat
+repository: https://github.com/nebeel0/flutter_butter
+topics:
+  - chat
+  - ai
+  - widgets
+  - ui
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.32.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  gpt_markdown: ^1.0.10
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

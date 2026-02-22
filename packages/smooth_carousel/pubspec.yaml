@@ -1,0 +1,22 @@
+name: smooth_carousel
+description: An image carousel with page indicators and navigation arrows for Flutter.
+version: 0.1.0
+homepage: https://github.com/nebeel0/flutter_butter/tree/main/packages/smooth_carousel
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.32.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

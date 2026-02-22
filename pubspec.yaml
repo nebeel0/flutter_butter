@@ -6,9 +6,24 @@ environment:
 dev_dependencies:
   melos: ^6.3.3
 
+flutter:
+  uses-material-design: true
+
 workspace:
   - apps/showcase
   - packages/smooth_button
   - packages/smooth_button/example
   - packages/butter_search_bar
   - packages/butter_search_bar/example
+  - packages/butter_chat
+  - packages/butter_chat/example
+  - packages/smooth_error
+  - packages/smooth_error/example
+  - packages/smooth_toast
+  - packages/smooth_toast/example
+  - packages/smooth_carousel
+  - packages/smooth_carousel/example
+  - packages/smooth_badge
+  - packages/smooth_badge/example
+  - packages/smooth_overlay
+  - packages/smooth_overlay/example
