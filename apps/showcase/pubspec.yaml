@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   smooth_button: any
+  road_map: any
 
 dev_dependencies:
   flutter_test:

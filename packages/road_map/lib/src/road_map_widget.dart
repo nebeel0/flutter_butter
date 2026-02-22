@@ -49,12 +49,13 @@ class RoadMap extends StatelessWidget {
     BuildContext context,
     RoadMapNode node,
     RoadMapController controller,
-  )? nodePageBuilder;
+  )?
+  nodePageBuilder;
 
   /// Called after a validation item is toggled. Use for side effects
   /// (e.g., persisting state, analytics).
   final void Function(String nodeId, String itemId, bool complete)?
-      onValidationChange;
+  onValidationChange;
 
   /// Which node to show on first render. Defaults to first root node.
   final String? initialNodeId;
@@ -64,8 +65,7 @@ class RoadMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (initialNodeId != null &&
-        controller.currentNodeId != initialNodeId) {
+    if (initialNodeId != null && controller.currentNodeId != initialNodeId) {
       // Navigate to initial node on first build.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (controller.currentNodeId != initialNodeId) {
@@ -126,7 +126,7 @@ class _CompactLayout extends StatelessWidget {
   final RoadMapController controller;
   final RoadMapStyle style;
   final Widget Function(BuildContext, RoadMapNode, RoadMapController)?
-      nodePageBuilder;
+  nodePageBuilder;
   final void Function(String, String, bool)? onValidationChange;
   final bool readOnly;
 
@@ -191,7 +191,7 @@ class _ExpandedLayout extends StatelessWidget {
   final RoadMapStyle style;
   final double sidebarWidth;
   final Widget Function(BuildContext, RoadMapNode, RoadMapController)?
-      nodePageBuilder;
+  nodePageBuilder;
   final void Function(String, String, bool)? onValidationChange;
   final bool readOnly;
 
@@ -206,10 +206,7 @@ class _ExpandedLayout extends StatelessWidget {
                 tooltip: 'Back',
               )
             : null,
-        title: _Breadcrumbs(
-          controller: controller,
-          style: style,
-        ),
+        title: _Breadcrumbs(controller: controller, style: style),
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -358,16 +355,13 @@ class _SidebarState extends State<_Sidebar> {
 
       if (children.isNotEmpty) {
         // Auto-expand path to current node, or all in search mode.
-        final shouldExpand = _searchQuery.isNotEmpty ||
-            _isAncestorOfCurrent(node.id);
+        final shouldExpand =
+            _searchQuery.isNotEmpty || _isAncestorOfCurrent(node.id);
 
         if (shouldExpand) {
-          widgets.addAll(_buildTree(
-            children,
-            style,
-            colorScheme,
-            depth: depth + 1,
-          ));
+          widgets.addAll(
+            _buildTree(children, style, colorScheme, depth: depth + 1),
+          );
         } else {
           widgets.add(
             _ExpandableChildren(
@@ -443,7 +437,11 @@ class _ExpandableChildrenState extends State<_ExpandableChildren> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.expand_more, size: 16, color: Theme.of(context).colorScheme.outline),
+                Icon(
+                  Icons.expand_more,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${widget.children.length} more...',
@@ -462,7 +460,11 @@ class _ExpandableChildrenState extends State<_ExpandableChildren> {
     for (final node in widget.children) {
       final status = widget.controller.statusOf(node.id);
       final isSelected = node.id == widget.controller.currentNodeId;
-      final statusColor = _statusColor(status, widget.style, widget.colorScheme);
+      final statusColor = _statusColor(
+        status,
+        widget.style,
+        widget.colorScheme,
+      );
 
       widgets.add(
         _SidebarItem(
@@ -488,7 +490,11 @@ class _ExpandableChildrenState extends State<_ExpandableChildren> {
                 node: gc,
                 depth: widget.depth + 1,
                 isSelected: gcSelected,
-                statusColor: _statusColor(gcStatus, widget.style, widget.colorScheme),
+                statusColor: _statusColor(
+                  gcStatus,
+                  widget.style,
+                  widget.colorScheme,
+                ),
                 status: gcStatus,
                 textStyle: widget.style.sidebarItemStyle,
                 onTap: () => widget.onNodeSelected(gc.id),
@@ -590,10 +596,7 @@ class _SidebarItem extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _Breadcrumbs extends StatelessWidget {
-  const _Breadcrumbs({
-    required this.controller,
-    required this.style,
-  });
+  const _Breadcrumbs({required this.controller, required this.style});
 
   final RoadMapController controller;
   final RoadMapStyle style;
@@ -637,9 +640,9 @@ class _Breadcrumbs extends StatelessWidget {
             else
               Text(
                 path[i].label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
               ),
           ],
         ],
@@ -680,7 +683,7 @@ class _NodePage extends StatelessWidget {
   final RoadMapController controller;
   final RoadMapStyle style;
   final Widget Function(BuildContext, RoadMapNode, RoadMapController)?
-      nodePageBuilder;
+  nodePageBuilder;
   final void Function(String, String, bool)? onValidationChange;
   final bool readOnly;
 
@@ -714,7 +717,8 @@ class _NodePage extends StatelessWidget {
             // Title
             Text(
               node.label,
-              style: style.nodeTitleStyle ??
+              style:
+                  style.nodeTitleStyle ??
                   theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -931,11 +935,7 @@ class _PrerequisiteItem extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              size: 16,
-              color: colorScheme.outline,
-            ),
+            Icon(Icons.chevron_right, size: 16, color: colorScheme.outline),
           ],
         ),
       ),
@@ -972,11 +972,7 @@ class _NavButton extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16),
-          const SizedBox(width: 8),
-          Text(label),
-        ],
+        children: [Icon(icon, size: 16), const SizedBox(width: 8), Text(label)],
       ),
     );
   }

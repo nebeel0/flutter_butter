@@ -69,23 +69,20 @@ class RoadMapController extends ChangeNotifier {
 
   /// Returns the prerequisite (parent) nodes of the given node.
   List<RoadMapNode> parentsOf(String nodeId) {
-    return (_parentIds[nodeId] ?? [])
-        .map((id) => _nodeById[id]!)
-        .toList();
+    return (_parentIds[nodeId] ?? []).map((id) => _nodeById[id]!).toList();
   }
 
   /// Returns the dependent (child) nodes of the given node.
   List<RoadMapNode> childrenOf(String nodeId) {
-    return (_childIds[nodeId] ?? [])
-        .map((id) => _nodeById[id]!)
-        .toList();
+    return (_childIds[nodeId] ?? []).map((id) => _nodeById[id]!).toList();
   }
 
   /// Overall completion ratio: complete nodes / total nodes (0.0–1.0).
   double get totalProgress {
     if (_data.nodes.isEmpty) return 0.0;
-    final completeCount =
-        _data.nodes.where((n) => statusOf(n.id) == NodeStatus.complete).length;
+    final completeCount = _data.nodes
+        .where((n) => statusOf(n.id) == NodeStatus.complete)
+        .length;
     return completeCount / _data.nodes.length;
   }
 
@@ -125,21 +122,19 @@ class RoadMapController extends ChangeNotifier {
   /// Toggles a validation item's completion state.
   ///
   /// Recomputes [NodeStatus] for the affected node and cascading dependents.
-  void setValidationItemComplete(
-    String nodeId,
-    String itemId,
-    bool complete,
-  ) {
+  void setValidationItemComplete(String nodeId, String itemId, bool complete) {
     final node = _nodeById[nodeId];
     if (node == null) {
       throw ArgumentError('Unknown node ID: $nodeId');
     }
 
-    final itemIndex =
-        node.validationItems.indexWhere((item) => item.id == itemId);
+    final itemIndex = node.validationItems.indexWhere(
+      (item) => item.id == itemId,
+    );
     if (itemIndex == -1) {
       throw ArgumentError(
-          'Unknown validation item ID: $itemId on node $nodeId');
+        'Unknown validation item ID: $itemId on node $nodeId',
+      );
     }
 
     final currentItem = node.validationItems[itemIndex];
@@ -152,7 +147,9 @@ class RoadMapController extends ChangeNotifier {
     final newNode = node.copyWith(validationItems: newItems);
 
     // Update the node in data.
-    final newNodes = _data.nodes.map((n) => n.id == nodeId ? newNode : n).toList();
+    final newNodes = _data.nodes
+        .map((n) => n.id == nodeId ? newNode : n)
+        .toList();
     _data = RoadMapData(
       label: _data.label,
       nodes: newNodes,
@@ -207,7 +204,9 @@ class RoadMapController extends ChangeNotifier {
     // Set initial current node: first root, or first node if no roots.
     if (newData.nodes.isNotEmpty) {
       final roots = rootNodes;
-      _currentNodeId = roots.isNotEmpty ? roots.first.id : newData.nodes.first.id;
+      _currentNodeId = roots.isNotEmpty
+          ? roots.first.id
+          : newData.nodes.first.id;
       _history.clear();
       _history.add(_currentNodeId);
       _historyIndex = 0;
@@ -243,8 +242,9 @@ class RoadMapController extends ChangeNotifier {
       return NodeStatus.complete;
     }
 
-    final allItemsComplete =
-        node.validationItems.every((item) => item.isComplete);
+    final allItemsComplete = node.validationItems.every(
+      (item) => item.isComplete,
+    );
     return allItemsComplete ? NodeStatus.complete : NodeStatus.ready;
   }
 

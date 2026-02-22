@@ -4,7 +4,9 @@ import 'package:road_map/road_map.dart';
 
 Widget _app({required Widget child, double? width}) {
   final body = width != null
-      ? Center(child: SizedBox(width: width, height: 600, child: child))
+      ? Center(
+          child: SizedBox(width: width, height: 600, child: child),
+        )
       : child;
   return MaterialApp(home: body);
 }
@@ -26,17 +28,13 @@ RoadMapData _sampleData() {
         id: 'clone',
         label: 'Clone Repository',
         content: 'Clone the main repo.',
-        validationItems: [
-          ValidationItem(id: 'c1', label: 'Repo cloned'),
-        ],
+        validationItems: [ValidationItem(id: 'c1', label: 'Repo cloned')],
       ),
       RoadMapNode(
         id: 'pr',
         label: 'Submit First PR',
         content: 'Pick an issue and submit.',
-        validationItems: [
-          ValidationItem(id: 'p1', label: 'PR submitted'),
-        ],
+        validationItems: [ValidationItem(id: 'p1', label: 'PR submitted')],
       ),
     ],
     edges: const [
@@ -51,9 +49,7 @@ void main() {
     testWidgets('renders current node title and content', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       expect(find.text('Set Up Environment'), findsWidgets);
       expect(find.text('Install required tools.'), findsOneWidget);
@@ -64,9 +60,7 @@ void main() {
     testWidgets('renders validation checklist', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       expect(find.text('IDE installed'), findsOneWidget);
       expect(find.text('SDK configured'), findsOneWidget);
@@ -77,9 +71,7 @@ void main() {
     testWidgets('renders status badge', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       expect(find.text('Ready'), findsOneWidget);
 
@@ -89,13 +81,13 @@ void main() {
     testWidgets('renders child navigation buttons', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       // Should show "Clone Repository" as a next navigation button.
-      expect(find.widgetWithText(OutlinedButton, 'Clone Repository'),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(OutlinedButton, 'Clone Repository'),
+        findsOneWidget,
+      );
 
       controller.dispose();
     });
@@ -103,9 +95,7 @@ void main() {
     testWidgets('navigates to child on button tap', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       // Tap the "Clone Repository" nav button.
       await tester.tap(find.widgetWithText(OutlinedButton, 'Clone Repository'));
@@ -120,9 +110,7 @@ void main() {
     testWidgets('toggles validation checkbox', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       // Tap the first checkbox (IDE installed).
       final checkbox = find.byType(CheckboxListTile).first;
@@ -138,13 +126,14 @@ void main() {
     testWidgets('readOnly disables checkboxes', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller, readOnly: true),
-      ));
+      await tester.pumpWidget(
+        _app(child: RoadMap(controller: controller, readOnly: true)),
+      );
 
       // Find a CheckboxListTile and verify it is disabled.
       final tile = tester.widget<CheckboxListTile>(
-          find.byType(CheckboxListTile).first);
+        find.byType(CheckboxListTile).first,
+      );
       expect(tile.onChanged, isNull);
 
       controller.dispose();
@@ -156,16 +145,18 @@ void main() {
       String? changedItemId;
       bool? changedValue;
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(
-          controller: controller,
-          onValidationChange: (nodeId, itemId, value) {
-            changedNodeId = nodeId;
-            changedItemId = itemId;
-            changedValue = value;
-          },
+      await tester.pumpWidget(
+        _app(
+          child: RoadMap(
+            controller: controller,
+            onValidationChange: (nodeId, itemId, value) {
+              changedNodeId = nodeId;
+              changedItemId = itemId;
+              changedValue = value;
+            },
+          ),
         ),
-      ));
+      );
 
       await tester.tap(find.byType(CheckboxListTile).first);
       await tester.pumpAndSettle();
@@ -180,14 +171,16 @@ void main() {
     testWidgets('nodePageBuilder replaces default page', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(
-          controller: controller,
-          nodePageBuilder: (context, node, ctrl) {
-            return Center(child: Text('Custom: ${node.label}'));
-          },
+      await tester.pumpWidget(
+        _app(
+          child: RoadMap(
+            controller: controller,
+            nodePageBuilder: (context, node, ctrl) {
+              return Center(child: Text('Custom: ${node.label}'));
+            },
+          ),
         ),
-      ));
+      );
 
       expect(find.text('Custom: Set Up Environment'), findsOneWidget);
       // Default content should not appear.
@@ -199,9 +192,7 @@ void main() {
     testWidgets('back button appears after navigation', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(_app(child: RoadMap(controller: controller)));
 
       // No back button initially.
       expect(find.byIcon(Icons.arrow_back), findsNothing);
@@ -227,10 +218,12 @@ void main() {
     testWidgets('compact layout uses Scaffold with drawer', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        width: 400, // < 600
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(
+        _app(
+          width: 400, // < 600
+          child: RoadMap(controller: controller),
+        ),
+      );
 
       // Should have a menu icon for the drawer.
       expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -241,10 +234,12 @@ void main() {
     testWidgets('expanded layout shows persistent sidebar', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        width: 900, // >= 600
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(
+        _app(
+          width: 900, // >= 600
+          child: RoadMap(controller: controller),
+        ),
+      );
 
       // Should have no menu icon (sidebar is persistent).
       expect(find.byIcon(Icons.menu), findsNothing);
@@ -260,10 +255,9 @@ void main() {
     testWidgets('shows all root and child nodes', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        width: 900,
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(
+        _app(width: 900, child: RoadMap(controller: controller)),
+      );
 
       // Root node should be visible in sidebar.
       // The title appears in both sidebar and page, so findsWidgets.
@@ -275,10 +269,9 @@ void main() {
     testWidgets('sidebar navigation updates page view', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        width: 900,
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(
+        _app(width: 900, child: RoadMap(controller: controller)),
+      );
 
       // Navigate programmatically (simulating sidebar tap).
       controller.navigateTo('clone');
@@ -293,10 +286,9 @@ void main() {
     testWidgets('progress indicator shows percentage', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        width: 900,
-        child: RoadMap(controller: controller),
-      ));
+      await tester.pumpWidget(
+        _app(width: 900, child: RoadMap(controller: controller)),
+      );
 
       expect(find.text('0%'), findsOneWidget);
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
@@ -309,15 +301,17 @@ void main() {
     testWidgets('applies custom style', (tester) async {
       final controller = RoadMapController(data: _sampleData());
 
-      await tester.pumpWidget(_app(
-        child: RoadMap(
-          controller: controller,
-          style: const RoadMapStyle(
-            readyColor: Colors.orange,
-            pagePadding: EdgeInsets.all(32),
+      await tester.pumpWidget(
+        _app(
+          child: RoadMap(
+            controller: controller,
+            style: const RoadMapStyle(
+              readyColor: Colors.orange,
+              pagePadding: EdgeInsets.all(32),
+            ),
           ),
         ),
-      ));
+      );
 
       // Widget should render without errors.
       expect(find.byType(RoadMap), findsOneWidget);

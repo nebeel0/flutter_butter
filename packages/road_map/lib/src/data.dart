@@ -32,11 +32,7 @@ class ValidationItem {
   final bool isComplete;
 
   /// Returns a copy with the given fields replaced.
-  ValidationItem copyWith({
-    String? id,
-    String? label,
-    bool? isComplete,
-  }) {
+  ValidationItem copyWith({String? id, String? label, bool? isComplete}) {
     return ValidationItem(
       id: id ?? this.id,
       label: label ?? this.label,
@@ -55,11 +51,7 @@ class ValidationItem {
 
   /// Serializes to a JSON map.
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'label': label,
-      'isComplete': isComplete,
-    };
+    return {'id': id, 'label': label, 'isComplete': isComplete};
   }
 
   @override
@@ -125,9 +117,9 @@ class RoadMapNode {
       id: json['id'] as String,
       label: json['label'] as String,
       content: json['content'] as String? ?? '',
-      validationItems: (json['validationItems'] as List<dynamic>?)
-              ?.map((e) =>
-                  ValidationItem.fromJson(e as Map<String, dynamic>))
+      validationItems:
+          (json['validationItems'] as List<dynamic>?)
+              ?.map((e) => ValidationItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
     );
@@ -154,12 +146,8 @@ class RoadMapNode {
           listEquals(validationItems, other.validationItems);
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        label,
-        content,
-        Object.hashAll(validationItems),
-      );
+  int get hashCode =>
+      Object.hash(id, label, content, Object.hashAll(validationItems));
 
   @override
   String toString() => 'RoadMapNode(id: $id, label: $label)';
@@ -171,10 +159,7 @@ class RoadMapNode {
 @immutable
 class RoadMapEdge {
   /// Creates an edge.
-  const RoadMapEdge({
-    required this.source,
-    required this.target,
-  });
+  const RoadMapEdge({required this.source, required this.target});
 
   /// The ID of the prerequisite node.
   final String source;
@@ -192,10 +177,7 @@ class RoadMapEdge {
 
   /// Serializes to a JSON map.
   Map<String, dynamic> toJson() {
-    return {
-      'source': source,
-      'target': target,
-    };
+    return {'source': source, 'target': target};
   }
 
   @override
@@ -274,11 +256,13 @@ class RoadMapData {
     for (final edge in edges) {
       if (!nodeIds.contains(edge.source)) {
         throw RoadMapFormatException(
-            'Edge references non-existent source node: ${edge.source}');
+          'Edge references non-existent source node: ${edge.source}',
+        );
       }
       if (!nodeIds.contains(edge.target)) {
         throw RoadMapFormatException(
-            'Edge references non-existent target node: ${edge.target}');
+          'Edge references non-existent target node: ${edge.target}',
+        );
       }
     }
   }
@@ -290,7 +274,8 @@ class RoadMapData {
       nodes: (json['nodes'] as List<dynamic>)
           .map((e) => RoadMapNode.fromJson(e as Map<String, dynamic>))
           .toList(),
-      edges: (json['edges'] as List<dynamic>?)
+      edges:
+          (json['edges'] as List<dynamic>?)
               ?.map((e) => RoadMapEdge.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
@@ -316,11 +301,8 @@ class RoadMapData {
           listEquals(edges, other.edges);
 
   @override
-  int get hashCode => Object.hash(
-        label,
-        Object.hashAll(nodes),
-        Object.hashAll(edges),
-      );
+  int get hashCode =>
+      Object.hash(label, Object.hashAll(nodes), Object.hashAll(edges));
 
   @override
   String toString() =>

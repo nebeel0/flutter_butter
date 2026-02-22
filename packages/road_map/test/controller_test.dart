@@ -98,9 +98,7 @@ void main() {
     });
 
     test('handles empty graph', () {
-      final controller = RoadMapController(
-        data: RoadMapData(nodes: const []),
-      );
+      final controller = RoadMapController(data: RoadMapData(nodes: const []));
       expect(controller.data.nodes, isEmpty);
       controller.dispose();
     });
@@ -241,9 +239,7 @@ void main() {
 
   group('Total progress', () {
     test('empty graph returns 0', () {
-      final controller = RoadMapController(
-        data: RoadMapData(nodes: const []),
-      );
+      final controller = RoadMapController(data: RoadMapData(nodes: const []));
       expect(controller.totalProgress, 0.0);
       controller.dispose();
     });
@@ -415,13 +411,15 @@ void main() {
 
       // Update with diamond DAG which doesn't have node 'c' -> wait, it does
       // have 'c'. Let's use a different data set.
-      controller.updateData(RoadMapData(
-        nodes: const [
-          RoadMapNode(id: 'x', label: 'X'),
-          RoadMapNode(id: 'y', label: 'Y'),
-        ],
-        edges: const [RoadMapEdge(source: 'x', target: 'y')],
-      ));
+      controller.updateData(
+        RoadMapData(
+          nodes: const [
+            RoadMapNode(id: 'x', label: 'X'),
+            RoadMapNode(id: 'y', label: 'Y'),
+          ],
+          edges: const [RoadMapEdge(source: 'x', target: 'y')],
+        ),
+      );
 
       expect(controller.currentNodeId, 'x');
       controller.dispose();
@@ -430,16 +428,18 @@ void main() {
     test('throws on cyclic new data', () {
       final controller = RoadMapController(data: _linearDag());
       expect(
-        () => controller.updateData(RoadMapData(
-          nodes: const [
-            RoadMapNode(id: 'a', label: 'A'),
-            RoadMapNode(id: 'b', label: 'B'),
-          ],
-          edges: const [
-            RoadMapEdge(source: 'a', target: 'b'),
-            RoadMapEdge(source: 'b', target: 'a'),
-          ],
-        )),
+        () => controller.updateData(
+          RoadMapData(
+            nodes: const [
+              RoadMapNode(id: 'a', label: 'A'),
+              RoadMapNode(id: 'b', label: 'B'),
+            ],
+            edges: const [
+              RoadMapEdge(source: 'a', target: 'b'),
+              RoadMapEdge(source: 'b', target: 'a'),
+            ],
+          ),
+        ),
         throwsA(isA<RoadMapCycleException>()),
       );
       controller.dispose();

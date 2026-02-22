@@ -30,8 +30,11 @@ void main() {
     });
 
     test('JSON roundtrip', () {
-      const item =
-          ValidationItem(id: 'v1', label: 'Check it', isComplete: true);
+      const item = ValidationItem(
+        id: 'v1',
+        label: 'Check it',
+        isComplete: true,
+      );
       final json = item.toJson();
       final restored = ValidationItem.fromJson(json);
       expect(restored, equals(item));
@@ -170,8 +173,9 @@ void main() {
       );
 
       final jsonStr = jsonEncode(data.toJson());
-      final restored =
-          RoadMapData.fromJson(jsonDecode(jsonStr) as Map<String, dynamic>);
+      final restored = RoadMapData.fromJson(
+        jsonDecode(jsonStr) as Map<String, dynamic>,
+      );
 
       expect(restored.label, data.label);
       expect(restored.nodes.length, data.nodes.length);
