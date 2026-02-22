@@ -12,3 +12,5 @@ workspace:
   - packages/smooth_button/example
   - packages/butter_search_bar
   - packages/butter_search_bar/example
+  - packages/butter_chat
+  - packages/butter_chat/example
