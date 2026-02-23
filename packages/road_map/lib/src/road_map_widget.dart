@@ -339,14 +339,14 @@ class _SidebarState extends State<_Sidebar> {
       final isSelected = node.id == widget.controller.currentNodeId;
       final children = widget.controller.childrenOf(node.id);
 
-      final statusColor = _statusColor(status, style, colorScheme);
+      final nodeColor = statusColor(status, style, colorScheme);
 
       widgets.add(
         _SidebarItem(
           node: node,
           depth: depth,
           isSelected: isSelected,
-          statusColor: statusColor,
+          statusColor: nodeColor,
           status: status,
           textStyle: style.sidebarItemStyle,
           onTap: () => widget.onNodeSelected(node.id),
@@ -460,18 +460,14 @@ class _ExpandableChildrenState extends State<_ExpandableChildren> {
     for (final node in widget.children) {
       final status = widget.controller.statusOf(node.id);
       final isSelected = node.id == widget.controller.currentNodeId;
-      final statusColor = _statusColor(
-        status,
-        widget.style,
-        widget.colorScheme,
-      );
+      final nodeColor = statusColor(status, widget.style, widget.colorScheme);
 
       widgets.add(
         _SidebarItem(
           node: node,
           depth: widget.depth,
           isSelected: isSelected,
-          statusColor: statusColor,
+          statusColor: nodeColor,
           status: status,
           textStyle: widget.style.sidebarItemStyle,
           onTap: () => widget.onNodeSelected(node.id),
@@ -490,7 +486,7 @@ class _ExpandableChildrenState extends State<_ExpandableChildren> {
                 node: gc,
                 depth: widget.depth + 1,
                 isSelected: gcSelected,
-                statusColor: _statusColor(
+                statusColor: statusColor(
                   gcStatus,
                   widget.style,
                   widget.colorScheme,
@@ -866,7 +862,7 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final color = _statusColor(status, style, colorScheme);
+    final color = statusColor(status, style, colorScheme);
     final label = switch (status) {
       NodeStatus.blocked => 'Blocked',
       NodeStatus.ready => 'Ready',
@@ -905,7 +901,7 @@ class _PrerequisiteItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final color = _statusColor(status, style, colorScheme);
+    final color = statusColor(status, style, colorScheme);
 
     return InkWell(
       onTap: onTap,
@@ -961,7 +957,7 @@ class _NavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final color = _statusColor(status, style, colorScheme);
+    final color = statusColor(status, style, colorScheme);
 
     return OutlinedButton(
       onPressed: onPressed,
@@ -976,20 +972,4 @@ class _NavButton extends StatelessWidget {
       ),
     );
   }
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-Color _statusColor(
-  NodeStatus status,
-  RoadMapStyle style,
-  ColorScheme colorScheme,
-) {
-  return switch (status) {
-    NodeStatus.blocked => style.blockedColor ?? colorScheme.outline,
-    NodeStatus.ready => style.readyColor ?? colorScheme.primary,
-    NodeStatus.complete => style.completeColor ?? colorScheme.tertiary,
-  };
 }

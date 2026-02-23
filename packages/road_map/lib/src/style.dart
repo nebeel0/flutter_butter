@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'data.dart';
+
 /// Visual styling for the [RoadMap] widget.
 ///
 /// All fields are optional. When null, defaults are derived from
@@ -64,4 +66,18 @@ class RoadMapStyle {
       sidebarWidth: sidebarWidth ?? this.sidebarWidth,
     );
   }
+}
+
+/// Resolves the display color for a [NodeStatus] given [RoadMapStyle]
+/// overrides and the current [ColorScheme].
+Color statusColor(
+  NodeStatus status,
+  RoadMapStyle style,
+  ColorScheme colorScheme,
+) {
+  return switch (status) {
+    NodeStatus.blocked => style.blockedColor ?? colorScheme.outline,
+    NodeStatus.ready => style.readyColor ?? colorScheme.primary,
+    NodeStatus.complete => style.completeColor ?? colorScheme.tertiary,
+  };
 }

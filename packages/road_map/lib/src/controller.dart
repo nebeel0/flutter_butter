@@ -33,6 +33,7 @@ class RoadMapController extends ChangeNotifier {
   final Map<String, List<String>> _parentIds = {}; // nodeId -> parent IDs
   final Map<String, List<String>> _childIds = {}; // nodeId -> child IDs
   final Map<String, NodeStatus> _statusCache = {};
+  List<RoadMapNode> _topoOrder = [];
 
   /// The current road map data.
   RoadMapData get data => _data;
@@ -42,6 +43,12 @@ class RoadMapController extends ChangeNotifier {
 
   /// The ID of the node currently being viewed.
   String get currentNodeId => _currentNodeId;
+
+  /// All nodes in topological sort order.
+  ///
+  /// Parents always appear before their dependents. Useful for rendering
+  /// a flat checklist view of the entire road map.
+  List<RoadMapNode> get topologicalOrder => _topoOrder;
 
   /// All root nodes (nodes with no incoming prerequisite edges).
   List<RoadMapNode> get rootNodes {
@@ -214,13 +221,17 @@ class RoadMapController extends ChangeNotifier {
   }
 
   void _validateAcyclic() {
-    if (_data.nodes.isEmpty) return;
+    if (_data.nodes.isEmpty) {
+      _topoOrder = [];
+      return;
+    }
 
     try {
-      graphs.topologicalSort<String>(
+      final sortedIds = graphs.topologicalSort<String>(
         _data.nodes.map((n) => n.id),
         (String nodeId) => _childIds[nodeId] ?? <String>[],
       );
+      _topoOrder = sortedIds.map((id) => _nodeById[id]!).toList();
     } on graphs.CycleException {
       throw const RoadMapCycleException();
     }

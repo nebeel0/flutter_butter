@@ -8,5 +8,6 @@ export 'src/data.dart'
         RoadMapFormatException,
         RoadMapNode,
         ValidationItem;
+export 'src/road_map_list_view.dart' show RoadMapListView;
 export 'src/road_map_widget.dart' show RoadMap;
 export 'src/style.dart' show RoadMapStyle;

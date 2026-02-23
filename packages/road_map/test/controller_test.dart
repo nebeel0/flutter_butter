@@ -446,6 +446,48 @@ void main() {
     });
   });
 
+  group('Topological order', () {
+    test('returns nodes in topological order', () {
+      final controller = RoadMapController(data: _linearDag());
+      final order = controller.topologicalOrder.map((n) => n.id).toList();
+      // A must come before B, B before C.
+      expect(order.indexOf('a'), lessThan(order.indexOf('b')));
+      expect(order.indexOf('b'), lessThan(order.indexOf('c')));
+      controller.dispose();
+    });
+
+    test('diamond DAG respects all edges', () {
+      final controller = RoadMapController(data: _diamondDag());
+      final order = controller.topologicalOrder.map((n) => n.id).toList();
+      expect(order.indexOf('a'), lessThan(order.indexOf('b')));
+      expect(order.indexOf('a'), lessThan(order.indexOf('c')));
+      expect(order.indexOf('b'), lessThan(order.indexOf('d')));
+      expect(order.indexOf('c'), lessThan(order.indexOf('d')));
+      controller.dispose();
+    });
+
+    test('contains all nodes', () {
+      final controller = RoadMapController(data: _diamondDag());
+      expect(controller.topologicalOrder.length, 4);
+      controller.dispose();
+    });
+
+    test('empty graph returns empty list', () {
+      final controller = RoadMapController(data: RoadMapData(nodes: const []));
+      expect(controller.topologicalOrder, isEmpty);
+      controller.dispose();
+    });
+
+    test('updates after updateData', () {
+      final controller = RoadMapController(data: _linearDag());
+      expect(controller.topologicalOrder.length, 3);
+
+      controller.updateData(_diamondDag());
+      expect(controller.topologicalOrder.length, 4);
+      controller.dispose();
+    });
+  });
+
   group('Notification', () {
     test('notifies on navigateTo', () {
       final controller = RoadMapController(data: _linearDag());

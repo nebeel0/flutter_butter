@@ -18,6 +18,10 @@ class ExampleApp extends StatelessWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Main screen
+// ---------------------------------------------------------------------------
+
 class RoadMapExample extends StatefulWidget {
   const RoadMapExample({super.key});
 
@@ -26,12 +30,28 @@ class RoadMapExample extends StatefulWidget {
 }
 
 class _RoadMapExampleState extends State<RoadMapExample> {
-  late final RoadMapController _controller;
+  late RoadMapController _controller;
+  int _sampleIndex = 0;
+  bool _listView = false;
+
+  static final _samples = [
+    (
+      label: 'Vacation Planning',
+      icon: Icons.flight_takeoff,
+      data: _vacationPlanning(),
+    ),
+    (label: 'Learn Flutter', icon: Icons.school, data: _learningGoal()),
+    (
+      label: 'Dev Onboarding',
+      icon: Icons.developer_board,
+      data: _devOnboarding(),
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _controller = RoadMapController(data: _onboardingRoadmap());
+    _controller = RoadMapController(data: _samples[_sampleIndex].data);
   }
 
   @override
@@ -40,8 +60,47 @@ class _RoadMapExampleState extends State<RoadMapExample> {
     super.dispose();
   }
 
+  void _switchSample(int index) {
+    if (index == _sampleIndex) return;
+    setState(() {
+      _sampleIndex = index;
+      _controller.updateData(_samples[index].data);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Side panel: sample picker + view toggle
+        NavigationRail(
+          selectedIndex: _sampleIndex,
+          onDestinationSelected: _switchSample,
+          labelType: NavigationRailLabelType.all,
+          leading: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: IconButton.filledTonal(
+              icon: Icon(_listView ? Icons.view_agenda : Icons.list),
+              tooltip: _listView ? 'Page view' : 'List view',
+              onPressed: () => setState(() => _listView = !_listView),
+            ),
+          ),
+          destinations: [
+            for (final sample in _samples)
+              NavigationRailDestination(
+                icon: Icon(sample.icon),
+                label: Text(sample.label),
+              ),
+          ],
+        ),
+        const VerticalDivider(width: 1),
+        // Main content
+        Expanded(child: _listView ? _buildListView() : _buildPageView()),
+      ],
+    );
+  }
+
+  Widget _buildPageView() {
     return RoadMap(
       controller: _controller,
       onValidationChange: (nodeId, itemId, complete) {
@@ -49,19 +108,136 @@ class _RoadMapExampleState extends State<RoadMapExample> {
       },
     );
   }
+
+  Widget _buildListView() {
+    return Scaffold(
+      appBar: AppBar(title: Text(_samples[_sampleIndex].label)),
+      body: RoadMapListView(
+        controller: _controller,
+        onValidationChange: (nodeId, itemId, complete) {
+          debugPrint('Validation: $nodeId/$itemId = $complete');
+        },
+      ),
+    );
+  }
 }
 
-/// A 10-node onboarding roadmap for a new developer joining a team.
-RoadMapData _onboardingRoadmap() {
+// ---------------------------------------------------------------------------
+// Sample data
+// ---------------------------------------------------------------------------
+
+RoadMapData _vacationPlanning() {
+  return RoadMapData(
+    label: 'Vacation Planning',
+    nodes: const [
+      RoadMapNode(
+        id: 'dates',
+        label: 'Pick Dates',
+        content: 'Decide when you want to travel.',
+        validationItems: [
+          ValidationItem(id: 'd1', label: 'Choose departure date'),
+          ValidationItem(id: 'd2', label: 'Choose return date'),
+        ],
+      ),
+      RoadMapNode(
+        id: 'passport',
+        label: 'Check Passport',
+        content: 'Make sure your passport is valid for at least 6 months.',
+        validationItems: [
+          ValidationItem(id: 'pp1', label: 'Passport is valid'),
+        ],
+      ),
+      RoadMapNode(
+        id: 'flights',
+        label: 'Book Flights',
+        content: 'Search and book round-trip flights.',
+        validationItems: [ValidationItem(id: 'f1', label: 'Flights booked')],
+      ),
+      RoadMapNode(
+        id: 'hotel',
+        label: 'Reserve Hotel',
+        content: 'Find and reserve accommodation.',
+        validationItems: [ValidationItem(id: 'h1', label: 'Hotel reserved')],
+      ),
+      RoadMapNode(
+        id: 'itinerary',
+        label: 'Plan Itinerary',
+        content: 'Map out daily activities and sights to see.',
+        validationItems: [ValidationItem(id: 'i1', label: 'Itinerary drafted')],
+      ),
+      RoadMapNode(
+        id: 'pack',
+        label: 'Pack Bags',
+        content: 'Pack everything you need for the trip.',
+        validationItems: [ValidationItem(id: 'pk1', label: 'Bags packed')],
+      ),
+    ],
+    edges: const [
+      RoadMapEdge(source: 'dates', target: 'flights'),
+      RoadMapEdge(source: 'dates', target: 'hotel'),
+      RoadMapEdge(source: 'passport', target: 'flights'),
+      RoadMapEdge(source: 'flights', target: 'itinerary'),
+      RoadMapEdge(source: 'hotel', target: 'itinerary'),
+      RoadMapEdge(source: 'itinerary', target: 'pack'),
+    ],
+  );
+}
+
+RoadMapData _learningGoal() {
+  return RoadMapData(
+    label: 'Learn Flutter',
+    nodes: const [
+      RoadMapNode(
+        id: 'basics',
+        label: 'Learn Dart Basics',
+        content: 'Variables, functions, classes, and async.',
+        validationItems: [
+          ValidationItem(id: 'lb1', label: 'Complete Dart tutorial'),
+          ValidationItem(id: 'lb2', label: 'Write a CLI program'),
+        ],
+      ),
+      RoadMapNode(
+        id: 'widgets',
+        label: 'Understand Widgets',
+        content: 'Stateless, Stateful, layout widgets, and composition.',
+        validationItems: [
+          ValidationItem(id: 'w1', label: 'Build a counter app'),
+        ],
+      ),
+      RoadMapNode(
+        id: 'state',
+        label: 'State Management',
+        content: 'Learn ChangeNotifier, Provider, or Riverpod.',
+        validationItems: [
+          ValidationItem(id: 'sm1', label: 'Refactor counter with Provider'),
+        ],
+      ),
+      RoadMapNode(
+        id: 'project',
+        label: 'Build a Project',
+        content: 'Put it all together in a real app.',
+        validationItems: [
+          ValidationItem(id: 'p1', label: 'App compiles and runs'),
+          ValidationItem(id: 'p2', label: 'Published to GitHub'),
+        ],
+      ),
+    ],
+    edges: const [
+      RoadMapEdge(source: 'basics', target: 'widgets'),
+      RoadMapEdge(source: 'widgets', target: 'state'),
+      RoadMapEdge(source: 'state', target: 'project'),
+    ],
+  );
+}
+
+RoadMapData _devOnboarding() {
   return RoadMapData(
     label: 'Developer Onboarding',
     nodes: const [
       RoadMapNode(
         id: 'welcome',
         label: 'Welcome',
-        content:
-            'Welcome to the team! This roadmap will guide you through '
-            'everything you need to get started.',
+        content: 'Welcome to the team! Read the handbook and join Slack.',
         validationItems: [
           ValidationItem(id: 'w1', label: 'Read the team handbook'),
           ValidationItem(id: 'w2', label: 'Join Slack channels'),
@@ -70,9 +246,7 @@ RoadMapData _onboardingRoadmap() {
       RoadMapNode(
         id: 'env',
         label: 'Environment Setup',
-        content:
-            'Set up your local development environment with the required '
-            'tools and SDKs.',
+        content: 'Install IDE, Flutter SDK, and run flutter doctor.',
         validationItems: [
           ValidationItem(id: 'e1', label: 'Install IDE'),
           ValidationItem(id: 'e2', label: 'Install Flutter SDK'),
@@ -82,7 +256,7 @@ RoadMapData _onboardingRoadmap() {
       RoadMapNode(
         id: 'repo',
         label: 'Clone Repository',
-        content: 'Clone the main repository and verify you can build locally.',
+        content: 'Clone the main repo and verify you can build locally.',
         validationItems: [
           ValidationItem(id: 'r1', label: 'Clone the repo'),
           ValidationItem(id: 'r2', label: 'Run tests locally'),
@@ -91,43 +265,10 @@ RoadMapData _onboardingRoadmap() {
       RoadMapNode(
         id: 'arch',
         label: 'Architecture Overview',
-        content:
-            'Understand the project architecture, package structure, '
-            'and key design decisions.',
+        content: 'Understand package structure and key design decisions.',
         validationItems: [
           ValidationItem(id: 'a1', label: 'Read architecture docs'),
-          ValidationItem(id: 'a2', label: 'Review package diagram'),
         ],
-      ),
-      RoadMapNode(
-        id: 'style',
-        label: 'Code Style & Conventions',
-        content:
-            'Learn the team coding conventions, lint rules, and '
-            'commit message format.',
-        validationItems: [
-          ValidationItem(id: 's1', label: 'Read style guide'),
-          ValidationItem(id: 's2', label: 'Configure linter'),
-        ],
-      ),
-      RoadMapNode(
-        id: 'testing',
-        label: 'Testing Practices',
-        content:
-            'Learn how to write and run unit, widget, and integration '
-            'tests in this project.',
-        validationItems: [
-          ValidationItem(id: 't1', label: 'Read testing guide'),
-          ValidationItem(id: 't2', label: 'Write a sample test'),
-        ],
-      ),
-      RoadMapNode(
-        id: 'ci',
-        label: 'CI/CD Pipeline',
-        content:
-            'Understand the continuous integration pipeline and how '
-            'deployments work.',
-        validationItems: [ValidationItem(id: 'ci1', label: 'Review CI config')],
       ),
       RoadMapNode(
         id: 'first_pr',
@@ -136,45 +277,15 @@ RoadMapData _onboardingRoadmap() {
         validationItems: [
           ValidationItem(id: 'pr1', label: 'Pick an issue'),
           ValidationItem(id: 'pr2', label: 'Submit PR'),
-          ValidationItem(id: 'pr3', label: 'Address review feedback'),
         ],
-      ),
-      RoadMapNode(
-        id: 'pair',
-        label: 'Pair Programming Session',
-        content:
-            'Schedule a pairing session with a senior team member '
-            'to work on a real feature.',
-        validationItems: [
-          ValidationItem(id: 'p1', label: 'Schedule session'),
-          ValidationItem(id: 'p2', label: 'Complete session'),
-        ],
-      ),
-      RoadMapNode(
-        id: 'done',
-        label: 'Onboarding Complete',
-        content: 'Congratulations! You have completed the onboarding process.',
       ),
     ],
     edges: const [
-      // Welcome unlocks both environment and architecture tracks.
       RoadMapEdge(source: 'welcome', target: 'env'),
       RoadMapEdge(source: 'welcome', target: 'arch'),
-      // Environment track.
       RoadMapEdge(source: 'env', target: 'repo'),
-      // Architecture track.
-      RoadMapEdge(source: 'arch', target: 'style'),
-      RoadMapEdge(source: 'arch', target: 'testing'),
-      // CI requires both repo access and testing knowledge.
-      RoadMapEdge(source: 'repo', target: 'ci'),
-      RoadMapEdge(source: 'testing', target: 'ci'),
-      // First PR requires style knowledge and CI understanding.
-      RoadMapEdge(source: 'style', target: 'first_pr'),
-      RoadMapEdge(source: 'ci', target: 'first_pr'),
-      // Pairing requires first PR.
-      RoadMapEdge(source: 'first_pr', target: 'pair'),
-      // Done requires pairing.
-      RoadMapEdge(source: 'pair', target: 'done'),
+      RoadMapEdge(source: 'repo', target: 'first_pr'),
+      RoadMapEdge(source: 'arch', target: 'first_pr'),
     ],
   );
 }
